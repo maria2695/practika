@@ -23,15 +23,13 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public void saveCurrentBalance(Balance balance) {
-        Double sumOfTransactionAmounts = transactionRepository.calculateSumOfTransactionAmounts();
 
-        Double sumOfClientTransactionAmounts = transactionRepository.calculateSumOfClientTransactionAmounts();
 
-        double currentBalanceAmount = sumOfTransactionAmounts - sumOfClientTransactionAmounts;
+        Double sumOfClientTransactionAmounts = transactionRepository.calculateSumOfClientTransactionAmounts(balance.getClient().getId());
 
-        Balance balances = new Balance();
-        balance.setBalanceAmount(currentBalanceAmount);
-        balance.setLastTransactionDate(new Date());
-        balanceRepository.save(balances);
+
+        Balance newBalance = new Balance();
+        newBalance.setLastTransactionDate(new Date());
+        balanceRepository.save(newBalance);
     }
 }
