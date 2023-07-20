@@ -1,15 +1,16 @@
 package com.example.demo.services;
 
-
-
-import com.example.demo.entities.Ingredient;
+import com.example.demo.dto.ingredient.CreateIngredientDTO;
+import com.example.demo.dto.ingredient.GetAllIngredientDTO;
+import com.example.demo.dto.ingredient.ReadIngredientDTO;
+import com.example.demo.dto.ingredient.UpdateIngredientDTO;
 
 import java.util.List;
 
 public interface IngredientService {
-     Ingredient create(Ingredient ingredient);
-     Ingredient read(Long id);
-     Ingredient update(Ingredient ingredient, Long id);
+     CreateIngredientDTO create(CreateIngredientDTO ingredient);
+     ReadIngredientDTO read(Long id);
+     UpdateIngredientDTO update(UpdateIngredientDTO ingredient, Long id);
      void delete(Long id);
-     List<Ingredient> getAll();
+     List<GetAllIngredientDTO> getAll();
 }

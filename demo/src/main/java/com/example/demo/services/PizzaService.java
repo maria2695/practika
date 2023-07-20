@@ -1,15 +1,15 @@
 package com.example.demo.services;
 
-
-
-import com.example.demo.entities.Pizza;
-
+import com.example.demo.dto.pizza.CreatePizzaDTO;
+import com.example.demo.dto.pizza.GetAllPizzaDTO;
+import com.example.demo.dto.pizza.ReadPizzaDTO;
+import com.example.demo.dto.pizza.UpdatePizzaDTO;
 import java.util.List;
 
 public interface PizzaService {
-    Pizza create(Pizza pizza);
-    Pizza read(Long id);
-    Pizza update(Pizza pizza, Long id);
+    CreatePizzaDTO create(CreatePizzaDTO pizza);
+    ReadPizzaDTO read(Long id);
+    UpdatePizzaDTO update(UpdatePizzaDTO pizza, Long id);
     void delete(Long id);
-    List<Pizza> getAll();
+    List<GetAllPizzaDTO> getAll();
 }

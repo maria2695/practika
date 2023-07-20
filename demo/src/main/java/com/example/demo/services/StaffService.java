@@ -1,14 +1,15 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.Drink;
-import com.example.demo.entities.Staff;
-
+import com.example.demo.dto.staff.CreateStaffDTO;
+import com.example.demo.dto.staff.GetAllStaffDTO;
+import com.example.demo.dto.staff.ReadStaffDTO;
+import com.example.demo.dto.staff.UpdateStaffDTO;
 import java.util.List;
 
 public interface StaffService {
-    Staff create(Staff staff);
-    Staff read(Long id);
-    Staff update(Staff staff, Long id);
+    CreateStaffDTO create(CreateStaffDTO staff);
+    ReadStaffDTO read(Long id);
+    UpdateStaffDTO update(UpdateStaffDTO staff, Long id);
     void delete(Long id);
-    List<Staff> getAll();
+    List<GetAllStaffDTO> getAll();
 }
