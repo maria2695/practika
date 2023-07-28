@@ -1,15 +1,13 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.staff.CreateStaffDTO;
-import com.example.demo.dto.staff.GetAllStaffDTO;
-import com.example.demo.dto.staff.ReadStaffDTO;
-import com.example.demo.dto.staff.UpdateStaffDTO;
+import com.example.demo.dto.staff.StaffInfoDto;
+
 import java.util.List;
 
 public interface StaffService {
-    CreateStaffDTO create(CreateStaffDTO staff);
-    ReadStaffDTO read(Long id);
-    UpdateStaffDTO update(UpdateStaffDTO staff, Long id);
+    StaffInfoDto create(StaffInfoDto staff);
+    StaffInfoDto read(Long id);
+    StaffInfoDto update(StaffInfoDto staff, Long id);
     void delete(Long id);
-    List<GetAllStaffDTO> getAll();
+    List<StaffInfoDto> getAll();
 }

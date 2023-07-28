@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.balance.BalanceInfoDto;
 import com.example.demo.services.BalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -12,7 +15,7 @@ public class BalanceController {
 
     private final BalanceService balanceService;
     @GetMapping("/list")
-    public void getAll(){
-        balanceService.getAll();
+    public List<BalanceInfoDto> agetAll(){
+        return balanceService.getAll();
     }
 }

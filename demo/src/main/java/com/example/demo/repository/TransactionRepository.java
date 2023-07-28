@@ -7,9 +7,4 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
-    @Query("SELECT SUM(t.transactionAmount) FROM Transaction t WHERE t.client.id = :clientId")
-    Double calculateSumOfClientTransactionAmounts(@Param("clientId") Long clientId);
-
-}
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {}

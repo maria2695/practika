@@ -1,15 +1,14 @@
 package com.example.demo.services.impl;
 
-import com.example.demo.dto.client.CreateClientDTO;
-import com.example.demo.dto.client.GetAllClientsDTO;
-import com.example.demo.dto.client.ReadClientDTO;
-import com.example.demo.dto.client.UpdateClientDTO;
+import com.example.demo.dto.client.ClientInfoDto;
 import com.example.demo.entities.Client;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.services.ClientService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,64 +17,53 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    @Override
-    @Transactional
-    public CreateClientDTO create(CreateClientDTO createClientDTO) {
+    private Client mapToClient(ClientInfoDto clientInfoDTO) {
         Client client = new Client();
-        client.setFirstName(createClientDTO.getFirstName());
-        client.setLastName(createClientDTO.getLastName());
-        client.setAge(createClientDTO.getAge());
-        client.setLogin(createClientDTO.getLogin());
-        client.setPassword(createClientDTO.getPassword());
-        client.setCreditBalance(createClientDTO.getCreditBalance());
-        Client savedClient = clientRepository.save(client);
-        CreateClientDTO dto = new CreateClientDTO();
-        dto.setId(savedClient.getId());
-        dto.setFirstName(savedClient.getFirstName());
-        dto.setLastName(savedClient.getLastName());
-        dto.setAge(savedClient.getAge());
-        dto.setLogin(savedClient.getLogin());
-        dto.setPassword(savedClient.getPassword());
-        dto.setCreditBalance(savedClient.getCreditBalance());
+        client.setFirstName(clientInfoDTO.getFirstName());
+        client.setLastName(clientInfoDTO.getLastName());
+        client.setAge(clientInfoDTO.getAge());
+        client.setLogin(clientInfoDTO.getLogin());
+        client.setPassword(clientInfoDTO.getPassword());
+        client.setCreditBalance(clientInfoDTO.getCreditBalance());
+        return clientRepository.save(client);
+
+    }
+
+    private ClientInfoDto mapToClientDto(Client client) {
+        ClientInfoDto dto = new ClientInfoDto();
+        dto.setFirstName(client.getFirstName());
+        dto.setLastName(client.getLastName());
+        dto.setAge(client.getAge());
+        dto.setLogin(client.getLogin());
+        dto.setPassword(client.getPassword());
+        dto.setCreditBalance(client.getCreditBalance());
         return dto;
+    }
+    @Override
+    @Transactional
+    public ClientInfoDto create(ClientInfoDto createClient) {
+        if(createClient != null){
+            Client savedClient = mapToClient(createClient);
+            return mapToClientDto(savedClient);
+        }
+        return null;
     }
 
     @Override
-    public ReadClientDTO read(Long id) {
+    @Transactional(readOnly = true)
+    public ClientInfoDto read(Long id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        ReadClientDTO readClientDTO = new ReadClientDTO();
-        readClientDTO.setId(client.getId());
-        readClientDTO.setFirstName(client.getFirstName());
-        readClientDTO.setLastName(client.getLastName());
-        readClientDTO.setAge(client.getAge());
-        readClientDTO.setLogin(client.getLogin());
-        readClientDTO.setPassword(client.getPassword());
-        readClientDTO.setCreditBalance(client.getCreditBalance());
-        return readClientDTO;
+        return mapToClientDto(client);
     }
 
     @Override
     @Transactional
-    public UpdateClientDTO update(UpdateClientDTO updateClientDTO, Long id) {
+    public ClientInfoDto update(ClientInfoDto updateClientDto, Long id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        client.setFirstName(updateClientDTO.getFirstName());
-        client.setLastName(updateClientDTO.getLastName());
-        client.setAge(updateClientDTO.getAge());
-        client.setLogin(updateClientDTO.getLogin());
-        client.setPassword(updateClientDTO.getPassword());
-        client.setCreditBalance(updateClientDTO.getCreditBalance());
-        Client savedClient = clientRepository.save(client);
-        UpdateClientDTO dto = new UpdateClientDTO();
-        dto.setId(savedClient.getId());
-        dto.setFirstName(savedClient.getFirstName());
-        dto.setLastName(savedClient.getLastName());
-        dto.setAge(savedClient.getAge());
-        dto.setLogin(savedClient.getLogin());
-        dto.setPassword(savedClient.getPassword());
-        dto.setCreditBalance(savedClient.getCreditBalance());
-        return dto;
+        mapToClient(updateClientDto);
+        return mapToClientDto(client);
     }
 
     @Override
@@ -84,18 +72,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<GetAllClientsDTO> getAll() {
+    @Transactional(readOnly = true)
+    public List<ClientInfoDto> getAll() {
         List<Client> clientList = clientRepository.findAll();
-        return clientList.stream().map(client -> {
-            GetAllClientsDTO getAllClientsDTO = new GetAllClientsDTO();
-            getAllClientsDTO.setId(client.getId());
-            getAllClientsDTO.setFirstName(client.getFirstName());
-            getAllClientsDTO.setLastName(client.getLastName());
-            getAllClientsDTO.setAge(client.getAge());
-            getAllClientsDTO.setLogin(client.getLogin());
-            getAllClientsDTO.setPassword(client.getPassword());
-            getAllClientsDTO.setCreditBalance(client.getCreditBalance());
-            return getAllClientsDTO;
-        }).collect(Collectors.toList());
+        return clientList.stream()
+                .map(this::mapToClientDto)
+                .collect(Collectors.toList());
     }
 }

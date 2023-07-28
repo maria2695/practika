@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.staff.CreateStaffDTO;
-import com.example.demo.dto.staff.GetAllStaffDTO;
-import com.example.demo.dto.staff.ReadStaffDTO;
-import com.example.demo.dto.staff.UpdateStaffDTO;
+import com.example.demo.dto.staff.StaffInfoDto;
 import com.example.demo.services.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +14,24 @@ public class StaffController {
 
     private final StaffService staffService;
 
-    @PostMapping("/create")
-    public CreateStaffDTO createStaff(@RequestBody CreateStaffDTO createStaffDTO){
+    @PostMapping
+    public StaffInfoDto createStaff(@RequestBody StaffInfoDto createStaffDTO){
         return staffService.create(createStaffDTO);
     }
-    @GetMapping("/{id}")
-    public ReadStaffDTO readStaff(@RequestParam Long id){
+    @GetMapping
+    public StaffInfoDto readStaff(@RequestParam Long id){
         return staffService.read(id);
     }
-    @PutMapping("/{id}")
-    public UpdateStaffDTO updateStaff(@RequestBody UpdateStaffDTO updateStaffDTO, @RequestParam Long id){
+    @PutMapping
+    public StaffInfoDto updateStaff(@RequestBody StaffInfoDto updateStaffDTO, @RequestParam Long id){
         return staffService.update(updateStaffDTO, id);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public void deleteStaff(@RequestParam Long id){
         staffService.delete(id);
     }
     @GetMapping("/list")
-    public List<GetAllStaffDTO> staffList(){
+    public List<StaffInfoDto> staffList(){
         return staffService.getAll();
     }
 }

@@ -1,18 +1,14 @@
 package com.example.demo.services.impl;
 
-import com.example.demo.dto.staff.CreateStaffDTO;
-import com.example.demo.dto.staff.GetAllStaffDTO;
-import com.example.demo.dto.staff.ReadStaffDTO;
-import com.example.demo.dto.staff.UpdateStaffDTO;
+import com.example.demo.dto.staff.StaffInfoDto;
 import com.example.demo.entities.Staff;
+import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.repository.StaffRepository;
 import com.example.demo.services.StaffService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,55 +17,47 @@ public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
 
-
-    @Override
-    @Transactional
-    public CreateStaffDTO create(CreateStaffDTO createStaffDTO) {
+    private Staff mapToStaff(StaffInfoDto staffInfoDto){
         Staff staff = new Staff();
-        staff.setFirstName(createStaffDTO.getFirstName());
-        staff.setLastName(createStaffDTO.getLastName());
-        staff.setPosition(createStaffDTO.getPosition());
+        staff.setFirstName(staffInfoDto.getFirstName());
+        staff.setLastName(staffInfoDto.getLastName());
+        staff.setPosition(staffInfoDto.getPosition());
         staff.setWeeklySalary(staff.getWeeklySalary());
-        Staff savedStaff = staffRepository.save(staff);
-        CreateStaffDTO dto = new CreateStaffDTO();
-        dto.setId(savedStaff.getId());
-        dto.setFirstName(savedStaff.getFirstName());
-        dto.setLastName(savedStaff.getLastName());
-        dto.setPosition(savedStaff.getPosition());
-        dto.setWeeklySalary((savedStaff.getWeeklySalary()));
+        return staffRepository.save(staff);
+    }
+
+    private StaffInfoDto mapToStaffDto(Staff staff){
+        StaffInfoDto dto = new StaffInfoDto();
+        dto.setFirstName(staff.getFirstName());
+        dto.setLastName(staff.getLastName());
+        dto.setPosition(staff.getPosition());
+        dto.setWeeklySalary((staff.getWeeklySalary()));
         return dto;
     }
 
+
     @Override
-    public ReadStaffDTO read(Long id) {
+    @Transactional
+    public StaffInfoDto create(StaffInfoDto createStaffDTO) {
+        Staff savedStaff = mapToStaff(createStaffDTO);
+        return mapToStaffDto(savedStaff);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StaffInfoDto read(Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-        ReadStaffDTO readStaffDTO = new ReadStaffDTO();
-        readStaffDTO.setId(staff.getId());
-        readStaffDTO.setFirstName(staff.getFirstName());
-        readStaffDTO.setLastName(staff.getLastName());
-        readStaffDTO.setPosition(staff.getPosition());
-        readStaffDTO.setWeeklySalary(staff.getWeeklySalary());
-        return readStaffDTO;
+       return mapToStaffDto(staff);
     }
 
     @Override
     @Transactional
-    public UpdateStaffDTO update(UpdateStaffDTO updateStaffDTO, Long id) {
+    public StaffInfoDto update(StaffInfoDto updateStaffDTO, Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-        staff.setFirstName(updateStaffDTO.getFirstName());
-        staff.setLastName(updateStaffDTO.getLastName());
-        staff.setPosition(updateStaffDTO.getPosition());
-        staff.setWeeklySalary(updateStaffDTO.getWeeklySalary());
-        Staff savedStaff = staffRepository.save(staff);
-        UpdateStaffDTO dto = new UpdateStaffDTO();
-        dto.setId(savedStaff.getId());
-        dto.setFirstName(savedStaff.getFirstName());
-        dto.setLastName(savedStaff.getLastName());
-        dto.setPosition(savedStaff.getPosition());
-        dto.setWeeklySalary(savedStaff.getWeeklySalary());
-        return dto;
+        mapToStaff(updateStaffDTO);
+        return mapToStaffDto(staff);
     }
 
     @Override
@@ -78,16 +66,11 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<GetAllStaffDTO> getAll() {
-        List<Staff> staff1 = staffRepository.findAll();
-        return staff1.stream().map(staff -> {
-            GetAllStaffDTO getAllStaffDTO = new GetAllStaffDTO();
-            getAllStaffDTO.setId(staff.getId());
-            getAllStaffDTO.setFirstName(staff.getFirstName());
-            getAllStaffDTO.setLastName(staff.getLastName());
-            getAllStaffDTO.setPosition(staff.getPosition());
-            getAllStaffDTO.setWeeklySalary(staff.getWeeklySalary());
-            return getAllStaffDTO;
-                }).collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<StaffInfoDto> getAll() {
+        List<Staff> staffList = staffRepository.findAll();
+        return staffList.stream()
+                .map(this::mapToStaffDto)
+                .collect(Collectors.toList());
     }
 }

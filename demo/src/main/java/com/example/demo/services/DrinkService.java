@@ -1,16 +1,13 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.drink.CreateDrinkDTO;
-import com.example.demo.dto.drink.GetAllDrinksDTO;
-import com.example.demo.dto.drink.ReadDrinkDTO;
-import com.example.demo.dto.drink.UpdateDrinkDTO;
+import com.example.demo.dto.drink.DrinkInfoDto;
 
 import java.util.List;
 
 public interface DrinkService {
-     CreateDrinkDTO create(CreateDrinkDTO createDrinkDTO);
-     ReadDrinkDTO read(Long id);
-     UpdateDrinkDTO update(UpdateDrinkDTO updateDrinkDTO, Long id);
+     DrinkInfoDto create(DrinkInfoDto createDrinkDTO);
+     DrinkInfoDto read(Long id);
+     DrinkInfoDto update(DrinkInfoDto updateDrinkDTO, Long id);
      void delete(Long id);
-     List<GetAllDrinksDTO> getAll();
+     List<DrinkInfoDto> getAll();
 }
