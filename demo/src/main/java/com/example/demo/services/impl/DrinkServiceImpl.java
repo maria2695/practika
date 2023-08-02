@@ -2,6 +2,7 @@ package com.example.demo.services.impl;
 
 import com.example.demo.dto.drink.DrinkInfoDto;
 import com.example.demo.entities.Drink;
+import com.example.demo.exception.NullEntityReferenceException;
 import com.example.demo.repository.DrinkRepository;
 import com.example.demo.services.DrinkService;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +18,7 @@ public class DrinkServiceImpl implements DrinkService {
 
     private final DrinkRepository drinkRepository;
 
-    private Drink mapToDrink(DrinkInfoDto drinkInfoDto){
-        Drink drink = new Drink();
+    private Drink mapToDrink(Drink drink,DrinkInfoDto drinkInfoDto){
         drink.setName(drinkInfoDto.getName());
         drink.setPrice(drinkInfoDto.getPrice());
         drink.setPresence(drinkInfoDto.getPresence());
@@ -35,12 +35,12 @@ public class DrinkServiceImpl implements DrinkService {
 
     @Override
     @Transactional
-    public DrinkInfoDto create(DrinkInfoDto createDrinkDTO) {
+    public DrinkInfoDto create(Drink drink, DrinkInfoDto createDrinkDTO) {
        if(createDrinkDTO != null){
-           Drink savedDrink = mapToDrink(createDrinkDTO);
+           Drink savedDrink = mapToDrink(drink,createDrinkDTO);
            return mapToDrinkDto(savedDrink);
        }
-       return null;
+       throw new NullEntityReferenceException("Cannot be null");
     }
 
     @Override
@@ -56,8 +56,8 @@ public class DrinkServiceImpl implements DrinkService {
     public DrinkInfoDto update(DrinkInfoDto updateDrinkDto, Long id) {
         Drink drink = drinkRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Drink not found"));
-          mapToDrink(updateDrinkDto);
-          return mapToDrinkDto(drink);
+        var updated = drinkRepository.save(mapToDrink(drink, updateDrinkDto));
+        return mapToDrinkDto(updated);
     }
 
     @Override

@@ -1,14 +1,15 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.dto.client.ClientInfoDto;
+import com.example.demo.dto.client.CreateClientDto;
 import com.example.demo.entities.Client;
+import com.example.demo.exception.NullEntityReferenceException;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.services.ClientService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,20 +18,19 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private Client mapToClient(ClientInfoDto clientInfoDTO) {
-        Client client = new Client();
-        client.setFirstName(clientInfoDTO.getFirstName());
-        client.setLastName(clientInfoDTO.getLastName());
-        client.setAge(clientInfoDTO.getAge());
-        client.setLogin(clientInfoDTO.getLogin());
-        client.setPassword(clientInfoDTO.getPassword());
-        client.setCreditBalance(clientInfoDTO.getCreditBalance());
+    private Client mapToClient(Client client, CreateClientDto createClientDto) {
+        client.setFirstName(createClientDto.getFirstName());
+        client.setLastName(createClientDto.getLastName());
+        client.setAge(createClientDto.getAge());
+        client.setLogin(createClientDto.getLogin());
+        client.setPassword(createClientDto.getPassword());
+        client.setCreditBalance(createClientDto.getCreditBalance());
         return clientRepository.save(client);
 
     }
 
-    private ClientInfoDto mapToClientDto(Client client) {
-        ClientInfoDto dto = new ClientInfoDto();
+    private CreateClientDto mapToClientDto(Client client) {
+        CreateClientDto dto = new CreateClientDto();
         dto.setFirstName(client.getFirstName());
         dto.setLastName(client.getLastName());
         dto.setAge(client.getAge());
@@ -41,17 +41,17 @@ public class ClientServiceImpl implements ClientService {
     }
     @Override
     @Transactional
-    public ClientInfoDto create(ClientInfoDto createClient) {
+    public CreateClientDto create(Client client, CreateClientDto createClient) {
         if(createClient != null){
-            Client savedClient = mapToClient(createClient);
+            Client savedClient = mapToClient(client,createClient);
             return mapToClientDto(savedClient);
         }
-        return null;
+        throw new NullEntityReferenceException("Cannot be null");
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ClientInfoDto read(Long id) {
+    public CreateClientDto read(Long id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         return mapToClientDto(client);
@@ -59,11 +59,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public ClientInfoDto update(ClientInfoDto updateClientDto, Long id) {
+    public CreateClientDto update(CreateClientDto updateClientDto, Long id) {
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        mapToClient(updateClientDto);
-        return mapToClientDto(client);
+        var updated = clientRepository.save(mapToClient(client, updateClientDto));
+        return mapToClientDto(updated);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientInfoDto> getAll() {
+    public List<CreateClientDto> getAll() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream()
                 .map(this::mapToClientDto)

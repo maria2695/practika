@@ -18,8 +18,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    private Transaction mapToTransaction(TransactionInfoDto transactionInfoDto){
-        Transaction transaction = new Transaction();
+    private Transaction mapToTransaction(Transaction transaction,TransactionInfoDto transactionInfoDto){
         transaction.setTransactionDate(transactionInfoDto.getTransactionDate());
         transaction.setTransactionAmount(transactionInfoDto.getTransactionAmount());
         Client client = new Client();
@@ -37,8 +36,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionInfoDto create(TransactionInfoDto transactionDTO) {
-        Transaction savedTransaction = mapToTransaction(transactionDTO);
+    public TransactionInfoDto create(Transaction transaction, TransactionInfoDto transactionInfoDto) {
+        Transaction savedTransaction = mapToTransaction(transaction, transactionInfoDto);
         return mapToTransactionDto(savedTransaction);
     }
 

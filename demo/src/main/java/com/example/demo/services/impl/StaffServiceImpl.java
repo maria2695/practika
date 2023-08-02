@@ -17,8 +17,7 @@ public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
 
-    private Staff mapToStaff(StaffInfoDto staffInfoDto){
-        Staff staff = new Staff();
+    private Staff mapToStaff(Staff staff, StaffInfoDto staffInfoDto){
         staff.setFirstName(staffInfoDto.getFirstName());
         staff.setLastName(staffInfoDto.getLastName());
         staff.setPosition(staffInfoDto.getPosition());
@@ -38,8 +37,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     @Transactional
-    public StaffInfoDto create(StaffInfoDto createStaffDTO) {
-        Staff savedStaff = mapToStaff(createStaffDTO);
+    public StaffInfoDto create(Staff staff, StaffInfoDto staffInfoDto) {
+        Staff savedStaff = mapToStaff(staff,staffInfoDto);
         return mapToStaffDto(savedStaff);
     }
 
@@ -53,11 +52,11 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     @Transactional
-    public StaffInfoDto update(StaffInfoDto updateStaffDTO, Long id) {
+    public StaffInfoDto update(StaffInfoDto updateStaffDto, Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-        mapToStaff(updateStaffDTO);
-        return mapToStaffDto(staff);
+        var updated = staffRepository.save(mapToStaff(staff, updateStaffDto));
+        return mapToStaffDto(updated);
     }
 
     @Override

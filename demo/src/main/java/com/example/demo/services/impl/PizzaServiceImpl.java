@@ -18,8 +18,7 @@ public class PizzaServiceImpl implements PizzaService {
 
     private final PizzaRepository pizzaRepository;
 
-    private Pizza maptoPizza(PizzaInfoDto pizzaInfoDto){
-        Pizza pizza = new Pizza();
+    private Pizza maptoPizza(Pizza pizza, PizzaInfoDto pizzaInfoDto){
         pizza.setName(pizzaInfoDto.getName());
         Ingredient ingredient = new Ingredient();
         ingredient.setName(pizzaInfoDto.getName());
@@ -36,8 +35,8 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Override
     @Transactional
-    public PizzaInfoDto create(PizzaInfoDto createPizzaDto) {
-        Pizza savedPizza = maptoPizza(createPizzaDto);
+    public PizzaInfoDto create(Pizza pizza, PizzaInfoDto pizzaInfoDto) {
+        Pizza savedPizza = maptoPizza(pizza, pizzaInfoDto);
         return mapToPizzaDto(savedPizza);
     }
 
@@ -54,8 +53,8 @@ public class PizzaServiceImpl implements PizzaService {
     public PizzaInfoDto update(PizzaInfoDto updatePizzaDTO, Long id) {
         Pizza pizza = pizzaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pizza not found"));
-        maptoPizza(updatePizzaDTO);
-        return mapToPizzaDto(pizza);
+        var updated = pizzaRepository.save(maptoPizza(pizza, updatePizzaDTO));
+        return mapToPizzaDto(updated);
     }
 
     @Override
