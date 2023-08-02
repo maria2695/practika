@@ -25,3 +25,4 @@ public class CreateClientDto {
     @NotNull
     private double creditBalance;
 }
+

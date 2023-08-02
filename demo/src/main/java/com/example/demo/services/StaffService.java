@@ -12,3 +12,4 @@ public interface StaffService {
     void delete(Long id);
     List<StaffInfoDto> getAll();
 }
+

@@ -12,3 +12,4 @@ public interface IngredientService {
      void delete(Long id);
      List<IngredientInfoDto> getAll();
 }
+

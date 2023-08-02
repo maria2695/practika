@@ -52,3 +52,4 @@ public class BalanceServiceImpl implements BalanceService {
         balanceRepository.save(balance);
     }
 }
+

@@ -12,3 +12,4 @@ public interface DrinkService {
      void delete(Long id);
      List<DrinkInfoDto> getAll();
 }
+

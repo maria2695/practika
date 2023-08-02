@@ -9,3 +9,4 @@ public interface BalanceService {
     List<BalanceInfoDto> getAll();
     void saveCurrentBalance(Long clientId, double balanceAmount, Date lastTransactionDate);
 }
+

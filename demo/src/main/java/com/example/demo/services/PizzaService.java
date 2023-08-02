@@ -12,3 +12,4 @@ public interface PizzaService {
     void delete(Long id);
     List<PizzaInfoDto> getAll();
 }
+

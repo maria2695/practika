@@ -10,3 +10,4 @@ public interface TransactionService {
    TransactionInfoDto read(Long id);
    List<TransactionInfoDto> getAll();
 }
+
