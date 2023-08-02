@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Drink;
+import com.example.demo.dto.drink.DrinkInfoDto;
 import com.example.demo.services.DrinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,24 +13,24 @@ import java.util.List;
 public class DrinkController {
 
     private final DrinkService drinkService;
-    @PostMapping("/create")
-    public Drink createDrink(@RequestBody Drink drink){
-        return drinkService.create(drink);
+    @PostMapping
+    public DrinkInfoDto createDrink(@RequestBody DrinkInfoDto createDrinkDTO){
+        return drinkService.create(createDrinkDTO);
     }
-    @GetMapping("/{id}")
-    public Drink readDrink(@PathVariable Long id){
+    @GetMapping
+    public DrinkInfoDto readDrink(@PathVariable Long id){
         return drinkService.read(id);
     }
-    @PutMapping("/{id}")
-    public Drink updateDrink(@RequestBody Drink drink, @PathVariable Long id){
-        return drinkService.update(drink, id);
+    @PutMapping
+    public DrinkInfoDto updateDrink(@RequestBody DrinkInfoDto updateDrinkDTO, @RequestParam Long id){
+        return drinkService.update(updateDrinkDTO, id);
     }
-    @DeleteMapping("/{id}")
-    public void deleteDrink( @PathVariable Long id){
+    @DeleteMapping
+    public void deleteDrink( @RequestParam Long id){
         drinkService.delete(id);
     }
     @GetMapping("/list")
-    public List<Drink> drinkList(){
+    public List<DrinkInfoDto> drinkList(){
         return drinkService.getAll();
     }
 }

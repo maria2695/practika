@@ -1,15 +1,13 @@
 package com.example.demo.services;
 
-
-
-import com.example.demo.entities.Drink;
+import com.example.demo.dto.drink.DrinkInfoDto;
 
 import java.util.List;
 
 public interface DrinkService {
-     Drink create(Drink drink);
-     Drink read(Long id);
-     Drink update(Drink drink, Long id);
+     DrinkInfoDto create(DrinkInfoDto createDrinkDTO);
+     DrinkInfoDto read(Long id);
+     DrinkInfoDto update(DrinkInfoDto updateDrinkDTO, Long id);
      void delete(Long id);
-     List<Drink> getAll();
+     List<DrinkInfoDto> getAll();
 }

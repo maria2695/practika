@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Client;
+import com.example.demo.dto.client.ClientInfoDto;
 import com.example.demo.services.ClientService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,33 +14,26 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping("/create")
-    public Client createClient(@RequestBody Client client){
-        return clientService.create(client);
+    @PostMapping
+    public ClientInfoDto createClient(@RequestBody ClientInfoDto createClientDTO){
+        return clientService.create(createClientDTO);
     }
 
-    @GetMapping("/{id}")
-    public Client readClient(@PathVariable Long id){
+    @GetMapping
+    public ClientInfoDto readClient(@RequestParam Long id){
         return clientService.read(id);
     }
 
-    @PutMapping("/{id}")
-    public Client updateClient(@RequestBody Client client, @PathVariable Long id){
+    @PutMapping
+    public ClientInfoDto updateClient(@RequestBody ClientInfoDto client, @RequestParam Long id){
         return clientService.update(client, id);
     }
-    @DeleteMapping("/{id}")
-    public void deleteClient(@PathVariable Long id){
+    @DeleteMapping
+    public void deleteClient(@RequestParam Long id){
        clientService.delete(id);
     }
     @GetMapping("/list")
-    public List<Client> getAllClients(){
+    public List<ClientInfoDto> getAllClients(){
         return clientService.getAll();
     }
-
-
-
-
-
-
-
 }

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Staff;
+import com.example.demo.dto.staff.StaffInfoDto;
 import com.example.demo.services.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,25 +14,24 @@ public class StaffController {
 
     private final StaffService staffService;
 
-    @PostMapping("/create")
-    public Staff createStaff(@RequestBody Staff staff){
-        return staffService.create(staff);
+    @PostMapping
+    public StaffInfoDto createStaff(@RequestBody StaffInfoDto createStaffDTO){
+        return staffService.create(createStaffDTO);
     }
-    @GetMapping("/{id}")
-    public Staff readStaff(@PathVariable Long id){
+    @GetMapping
+    public StaffInfoDto readStaff(@RequestParam Long id){
         return staffService.read(id);
     }
-    @PutMapping("/{id}")
-    public Staff updateStaff(@RequestBody Staff staff, @PathVariable Long id){
-        return staffService.update(staff, id);
+    @PutMapping
+    public StaffInfoDto updateStaff(@RequestBody StaffInfoDto updateStaffDTO, @RequestParam Long id){
+        return staffService.update(updateStaffDTO, id);
     }
-    @DeleteMapping("/{id}")
-    public void deleteStaff(@PathVariable Long id){
+    @DeleteMapping
+    public void deleteStaff(@RequestParam Long id){
         staffService.delete(id);
     }
     @GetMapping("/list")
-    public List<Staff> staffList(){
+    public List<StaffInfoDto> staffList(){
         return staffService.getAll();
     }
-
 }

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Transaction;
+import com.example.demo.dto.transaction.TransactionInfoDto;
 import com.example.demo.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +12,16 @@ import java.util.List;
 @RequestMapping("/pizzeria/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
-    @PostMapping("/create")
-    public Transaction createTransaction(@RequestBody Transaction transaction){
-        return transactionService.create(transaction);
+    @PostMapping
+    public TransactionInfoDto createTransaction(@RequestBody TransactionInfoDto createTransactionDTO){
+        return transactionService.create(createTransactionDTO);
     }
-    @GetMapping("/{id}")
-    public Transaction readTransactions(@PathVariable Long id){
+    @GetMapping
+    public TransactionInfoDto readTransactions(@RequestParam Long id){
         return transactionService.read(id);
     }
     @GetMapping("/list")
-    public List<Transaction> getAllTransactions(){
+    public List<TransactionInfoDto> getAllTransactions(){
         return transactionService.getAll();
     }
-
 }

@@ -1,13 +1,13 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.Client;
+import com.example.demo.dto.client.ClientInfoDto;
 
 
 import java.util.List;
 public interface ClientService {
-     Client create(Client client);
-     Client read(Long id);
-     Client update(Client client, Long id);
+     ClientInfoDto create(ClientInfoDto createClientDTO);
+     ClientInfoDto read(Long id);
+     ClientInfoDto update(ClientInfoDto updateClientDTO, Long id);
      void delete(Long id);
-     List<Client> getAll();
+     List<ClientInfoDto> getAll();
 }

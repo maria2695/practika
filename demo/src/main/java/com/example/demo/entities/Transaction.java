@@ -17,22 +17,11 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "transaction_date", nullable = false)
+    @Column
     private Date transactionDate;
-    @Column(name = "transaction_amount", nullable = false)
+    @Column
     private double transactionAmount;
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn
     private Client client;
-    @ManyToOne
-    @JoinColumn(name = "drink_id", nullable = false)
-    private Drink drink;
-    @ManyToOne
-    @JoinColumn(name = "pizza_id", nullable = false)
-    private Pizza pizza;
-
-
-
-
-
 }

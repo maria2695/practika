@@ -1,11 +1,11 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.Transaction;
+import com.example.demo.dto.transaction.TransactionInfoDto;
 
 import java.util.List;
 
 public interface TransactionService {
-   Transaction create(Transaction transaction);
-   Transaction read(Long id);
-   List<Transaction> getAll();
+   TransactionInfoDto create(TransactionInfoDto transaction);
+   TransactionInfoDto read(Long id);
+   List<TransactionInfoDto> getAll();
 }

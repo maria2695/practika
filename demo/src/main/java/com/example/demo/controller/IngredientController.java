@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Ingredient;
+import com.example.demo.dto.ingredient.IngredientInfoDto;
 import com.example.demo.services.IngredientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +14,24 @@ public class IngredientController {
 
     private final IngredientService ingredientService;
 
-   @PostMapping("/create")
-    public Ingredient createIngredient(@RequestBody Ingredient ingredient){
-       return ingredientService.create(ingredient);
+   @PostMapping
+    public IngredientInfoDto createIngredient(@RequestBody IngredientInfoDto createIngredientDTO){
+       return ingredientService.create(createIngredientDTO);
    }
-   @GetMapping("/{id}")
-   public Ingredient readIngredient(@PathVariable Long id){
+   @GetMapping
+   public IngredientInfoDto readIngredient(@RequestParam Long id){
        return ingredientService.read(id);
    }
-   @PutMapping("/{id}")
-   public Ingredient updateIngredient(@RequestBody Ingredient ingredient,@PathVariable Long id){
-       return ingredientService.update(ingredient, id);
+   @PutMapping
+   public IngredientInfoDto updateIngredient(@RequestBody IngredientInfoDto updateIngredientDTO, @RequestBody Long id){
+       return ingredientService.update(updateIngredientDTO, id);
    }
-  @DeleteMapping("/{id}")
-   public void deleteIngredient(@PathVariable Long id){
+  @DeleteMapping
+   public void deleteIngredient(@RequestParam Long id){
        ingredientService.delete(id);
    }
    @GetMapping("/list")
-   public List<Ingredient> ingredientList(){
+   public List<IngredientInfoDto> ingredientList(){
        return ingredientService.getAll();
    }
 }

@@ -1,44 +1,74 @@
 package com.example.demo.services.impl;
 
+import com.example.demo.dto.pizza.PizzaInfoDto;
+import com.example.demo.entities.Ingredient;
 import com.example.demo.entities.Pizza;
 import com.example.demo.repository.PizzaRepository;
 import com.example.demo.services.PizzaService;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PizzaServiceImpl implements PizzaService {
+
     private final PizzaRepository pizzaRepository;
 
-    @Override
-    public Pizza create(Pizza pizza) {
+    private Pizza maptoPizza(PizzaInfoDto pizzaInfoDto){
+        Pizza pizza = new Pizza();
+        pizza.setName(pizzaInfoDto.getName());
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName(pizzaInfoDto.getName());
         return pizzaRepository.save(pizza);
     }
 
+    private PizzaInfoDto mapToPizzaDto(Pizza pizza){
+        PizzaInfoDto dto = new PizzaInfoDto();
+        dto.setName(pizza.getName());
+        dto.setIngredients(pizza.getIngredients());
+        return dto;
+    }
+
+
     @Override
-    public Pizza read(Long id) {
-        return pizzaRepository.findById(id).orElse(null);
+    @Transactional
+    public PizzaInfoDto create(PizzaInfoDto createPizzaDto) {
+        Pizza savedPizza = maptoPizza(createPizzaDto);
+        return mapToPizzaDto(savedPizza);
     }
 
     @Override
-    public Pizza update(Pizza pizza, Long id) {
-        Pizza exitedPizza = pizzaRepository.findById(id).orElse(null);
-        if(exitedPizza != null){
-            exitedPizza.setName(pizza.getName());
-            exitedPizza.setIngredients((pizza.getIngredients()));
-        }
-        return pizzaRepository.save(pizza);
+    @Transactional(readOnly = true)
+    public PizzaInfoDto read(Long id) {
+        Pizza pizza = pizzaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pizza not found"));
+        return mapToPizzaDto(pizza);
+    }
+
+    @Override
+    @Transactional
+    public PizzaInfoDto update(PizzaInfoDto updatePizzaDTO, Long id) {
+        Pizza pizza = pizzaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pizza not found"));
+        maptoPizza(updatePizzaDTO);
+        return mapToPizzaDto(pizza);
     }
 
     @Override
     public void delete(Long id) {
         pizzaRepository.deleteById(id);
     }
+
     @Override
-    public List<Pizza> getAll() {
-        return pizzaRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<PizzaInfoDto> getAll() {
+        List<Pizza> pizzaList = pizzaRepository.findAll();
+        return pizzaList.stream()
+                .map(this::mapToPizzaDto)
+                .collect(Collectors.toList());
     }
 }
