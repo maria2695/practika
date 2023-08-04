@@ -10,7 +10,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class CreateClientDto {
+public class CreateClientDto extends ClientInfoDto {
     @Max(value = 20)
     private String firstName;
     @Max(value = 20)

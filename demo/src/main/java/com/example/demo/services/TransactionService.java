@@ -6,7 +6,7 @@ import com.example.demo.entities.Transaction;
 import java.util.List;
 
 public interface TransactionService {
-   TransactionInfoDto create(Transaction transaction, TransactionInfoDto transactionInfoDto);
+   TransactionInfoDto create(TransactionInfoDto transactionInfoDto);
    TransactionInfoDto read(Long id);
    List<TransactionInfoDto> getAll();
 }

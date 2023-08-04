@@ -18,11 +18,12 @@ public class DrinkServiceImpl implements DrinkService {
 
     private final DrinkRepository drinkRepository;
 
-    private Drink mapToDrink(Drink drink,DrinkInfoDto drinkInfoDto){
+    private Drink mapdDtoToDrink(DrinkInfoDto drinkInfoDto){
+        var drink = new Drink();
         drink.setName(drinkInfoDto.getName());
         drink.setPrice(drinkInfoDto.getPrice());
         drink.setPresence(drinkInfoDto.getPresence());
-        return drinkRepository.save(drink);
+        return drink;
     }
 
     private DrinkInfoDto mapToDrinkDto(Drink drink){
@@ -35,9 +36,9 @@ public class DrinkServiceImpl implements DrinkService {
 
     @Override
     @Transactional
-    public DrinkInfoDto create(Drink drink, DrinkInfoDto createDrinkDTO) {
-       if(createDrinkDTO != null){
-           Drink savedDrink = mapToDrink(drink,createDrinkDTO);
+    public DrinkInfoDto create(DrinkInfoDto createDrinkDto) {
+       if(createDrinkDto != null){
+           var savedDrink = drinkRepository.save(mapdDtoToDrink(createDrinkDto));
            return mapToDrinkDto(savedDrink);
        }
        throw new NullEntityReferenceException("Cannot be null");
@@ -54,9 +55,9 @@ public class DrinkServiceImpl implements DrinkService {
     @Override
     @Transactional
     public DrinkInfoDto update(DrinkInfoDto updateDrinkDto, Long id) {
-        Drink drink = drinkRepository.findById(id)
+        var drink = drinkRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Drink not found"));
-        var updated = drinkRepository.save(mapToDrink(drink, updateDrinkDto));
+        var updated = drinkRepository.save(mapdDtoToDrink(updateDrinkDto));
         return mapToDrinkDto(updated);
     }
 

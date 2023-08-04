@@ -2,6 +2,7 @@ package com.example.demo.services.impl;
 
 import com.example.demo.dto.staff.StaffInfoDto;
 import com.example.demo.entities.Staff;
+import com.example.demo.exception.NullEntityReferenceException;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.repository.StaffRepository;
 import com.example.demo.services.StaffService;
@@ -17,12 +18,13 @@ public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
 
-    private Staff mapToStaff(Staff staff, StaffInfoDto staffInfoDto){
+    private Staff mapDtoToStaff(StaffInfoDto staffInfoDto){
+        var staff = new Staff();
         staff.setFirstName(staffInfoDto.getFirstName());
         staff.setLastName(staffInfoDto.getLastName());
         staff.setPosition(staffInfoDto.getPosition());
         staff.setWeeklySalary(staff.getWeeklySalary());
-        return staffRepository.save(staff);
+        return staff;
     }
 
     private StaffInfoDto mapToStaffDto(Staff staff){
@@ -37,9 +39,12 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     @Transactional
-    public StaffInfoDto create(Staff staff, StaffInfoDto staffInfoDto) {
-        Staff savedStaff = mapToStaff(staff,staffInfoDto);
-        return mapToStaffDto(savedStaff);
+    public StaffInfoDto create(StaffInfoDto staffInfoDto) {
+        if(staffInfoDto != null){
+            var savedStaff = staffRepository.save(mapDtoToStaff(staffInfoDto));
+            return mapToStaffDto(savedStaff);
+        }
+        throw new NullEntityReferenceException("Cannot be null");
     }
 
     @Override
@@ -53,9 +58,9 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public StaffInfoDto update(StaffInfoDto updateStaffDto, Long id) {
-        Staff staff = staffRepository.findById(id)
+        var staff = staffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-        var updated = staffRepository.save(mapToStaff(staff, updateStaffDto));
+        var updated = staffRepository.save(mapDtoToStaff(updateStaffDto));
         return mapToStaffDto(updated);
     }
 

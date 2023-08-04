@@ -18,13 +18,14 @@ public class IngredientServiceImpl implements IngredientService {
 
     private final IngredientRepository ingredientRepository;
 
-    private Ingredient mapToIngredient(Ingredient ingredient, IngredientInfoDto ingredientInfoDto){
+    private Ingredient mapDtoToIngredient(IngredientInfoDto ingredientInfoDto){
+        var ingredient = new Ingredient();
         ingredient.setName(ingredientInfoDto.getName());
         ingredient.setCount(ingredientInfoDto.getCount());
         ingredient.setBuyCost(ingredientInfoDto.getBuyCost());
         ingredient.setSaleCost(ingredientInfoDto.getSaleCost());
         ingredient.setNumberOfSales(ingredientInfoDto.getNumberOfSales());
-        return ingredientRepository.save(ingredient);
+        return ingredient;
     }
 
     private IngredientInfoDto mapToIngredientDto(Ingredient ingredient){
@@ -39,9 +40,9 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public IngredientInfoDto create(Ingredient ingredient, IngredientInfoDto ingredientInfoDto) {
+    public IngredientInfoDto create(IngredientInfoDto ingredientInfoDto) {
         if(ingredientInfoDto != null){
-            Ingredient savedIngredient = mapToIngredient(ingredient,ingredientInfoDto);
+            var savedIngredient = ingredientRepository.save(mapDtoToIngredient(ingredientInfoDto));
             return mapToIngredientDto(savedIngredient);
         }
         throw new NullEntityReferenceException("Cannot be null");
@@ -61,7 +62,7 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientInfoDto update(IngredientInfoDto updateIngredientDTO, Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-        var updated = ingredientRepository.save(mapToIngredient(ingredient, updateIngredientDTO));
+        var updated = ingredientRepository.save(mapDtoToIngredient(updateIngredientDTO));
         return mapToIngredientDto(updated);
     }
 

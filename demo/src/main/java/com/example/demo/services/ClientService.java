@@ -7,7 +7,7 @@ import com.example.demo.entities.Client;
 
 import java.util.List;
 public interface ClientService {
-     CreateClientDto create(Client client, CreateClientDto createClientDto);
+     ClientInfoDto create(CreateClientDto createClientDto);
      CreateClientDto read(Long id);
      CreateClientDto update(CreateClientDto updateClientDTO, Long id);
      void delete(Long id);

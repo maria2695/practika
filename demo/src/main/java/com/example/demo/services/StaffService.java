@@ -6,7 +6,7 @@ import com.example.demo.entities.Staff;
 import java.util.List;
 
 public interface StaffService {
-    StaffInfoDto create(Staff staff, StaffInfoDto staffInfoDto);
+    StaffInfoDto create(StaffInfoDto staffInfoDto);
     StaffInfoDto read(Long id);
     StaffInfoDto update(StaffInfoDto updateStaffDto, Long id);
     void delete(Long id);

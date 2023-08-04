@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private Client mapToClient(Client client, CreateClientDto createClientDto) {
+    private Client maptoDtoClient(CreateClientDto createClientDto) {
+        var client = new Client();
         client.setFirstName(createClientDto.getFirstName());
         client.setLastName(createClientDto.getLastName());
         client.setAge(createClientDto.getAge());
         client.setLogin(createClientDto.getLogin());
         client.setPassword(createClientDto.getPassword());
         client.setCreditBalance(createClientDto.getCreditBalance());
-        return clientRepository.save(client);
-
+        return client;
     }
 
     private CreateClientDto mapToClientDto(Client client) {
@@ -41,9 +41,9 @@ public class ClientServiceImpl implements ClientService {
     }
     @Override
     @Transactional
-    public CreateClientDto create(Client client, CreateClientDto createClient) {
-        if(createClient != null){
-            Client savedClient = mapToClient(client,createClient);
+    public ClientInfoDto create(CreateClientDto createClient) {
+        if(createClient != null) {
+            var savedClient = clientRepository.save(maptoDtoClient(createClient));
             return mapToClientDto(savedClient);
         }
         throw new NullEntityReferenceException("Cannot be null");
@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional(readOnly = true)
     public CreateClientDto read(Long id) {
-        Client client = clientRepository.findById(id)
+        var client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         return mapToClientDto(client);
     }
@@ -60,9 +60,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public CreateClientDto update(CreateClientDto updateClientDto, Long id) {
-        Client client = clientRepository.findById(id)
+        var client = clientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
-        var updated = clientRepository.save(mapToClient(client, updateClientDto));
+        var updated = clientRepository.save(maptoDtoClient(updateClientDto));
         return mapToClientDto(updated);
     }
 

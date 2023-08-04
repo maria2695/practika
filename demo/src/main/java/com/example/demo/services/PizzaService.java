@@ -6,7 +6,7 @@ import com.example.demo.entities.Pizza;
 import java.util.List;
 
 public interface PizzaService {
-    PizzaInfoDto create(Pizza pizza, PizzaInfoDto pizzaInfoDto);
+    PizzaInfoDto create(PizzaInfoDto pizzaInfoDto);
     PizzaInfoDto read(Long id);
     PizzaInfoDto update(PizzaInfoDto pizza, Long id);
     void delete(Long id);
