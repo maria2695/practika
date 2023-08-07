@@ -3,8 +3,10 @@ package com.example.demo.services.impl;
 import com.example.demo.dto.transaction.TransactionInfoDto;
 import com.example.demo.entities.Client;
 import com.example.demo.entities.Transaction;
+import com.example.demo.exception.NullEntityReferenceException;
 import com.example.demo.repository.TransactionRepository;
 import com.example.demo.services.TransactionService;
+import jakarta.validation.constraints.Null;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    private Transaction mapToTransaction(TransactionInfoDto transactionInfoDto){
-        Transaction transaction = new Transaction();
+    private Transaction mapDtoToTransaction(TransactionInfoDto transactionInfoDto){
+        var transaction = new Transaction();
         transaction.setTransactionDate(transactionInfoDto.getTransactionDate());
         transaction.setTransactionAmount(transactionInfoDto.getTransactionAmount());
         Client client = new Client();
@@ -37,9 +39,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionInfoDto create(TransactionInfoDto transactionDTO) {
-        Transaction savedTransaction = mapToTransaction(transactionDTO);
-        return mapToTransactionDto(savedTransaction);
+    public TransactionInfoDto create(TransactionInfoDto transactionInfoDto) {
+        if(transactionInfoDto != null){
+            var savedTransaction = transactionRepository.save(mapDtoToTransaction(transactionInfoDto));
+            return mapToTransactionDto(savedTransaction);
+        }
+        throw new NullEntityReferenceException("Cannot be bull");
     }
 
     @Override
@@ -59,3 +64,4 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(Collectors.toList());
     }
 }
+

@@ -3,6 +3,7 @@ package com.example.demo.services.impl;
 import com.example.demo.dto.pizza.PizzaInfoDto;
 import com.example.demo.entities.Ingredient;
 import com.example.demo.entities.Pizza;
+import com.example.demo.exception.NullEntityReferenceException;
 import com.example.demo.repository.PizzaRepository;
 import com.example.demo.services.PizzaService;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +19,12 @@ public class PizzaServiceImpl implements PizzaService {
 
     private final PizzaRepository pizzaRepository;
 
-    private Pizza maptoPizza(PizzaInfoDto pizzaInfoDto){
-        Pizza pizza = new Pizza();
+    private Pizza mapDtotoPizza(PizzaInfoDto pizzaInfoDto){
+        var pizza = new Pizza();
         pizza.setName(pizzaInfoDto.getName());
         Ingredient ingredient = new Ingredient();
         ingredient.setName(pizzaInfoDto.getName());
-        return pizzaRepository.save(pizza);
+        return pizza;
     }
 
     private PizzaInfoDto mapToPizzaDto(Pizza pizza){
@@ -36,9 +37,12 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Override
     @Transactional
-    public PizzaInfoDto create(PizzaInfoDto createPizzaDto) {
-        Pizza savedPizza = maptoPizza(createPizzaDto);
-        return mapToPizzaDto(savedPizza);
+    public PizzaInfoDto create(PizzaInfoDto pizzaInfoDto) {
+        if(pizzaInfoDto != null){
+           var savedPizza = pizzaRepository.save(mapDtotoPizza(pizzaInfoDto));
+            return mapToPizzaDto(savedPizza);
+        }
+        throw new NullEntityReferenceException("Cannot be null");
     }
 
     @Override
@@ -52,10 +56,10 @@ public class PizzaServiceImpl implements PizzaService {
     @Override
     @Transactional
     public PizzaInfoDto update(PizzaInfoDto updatePizzaDTO, Long id) {
-        Pizza pizza = pizzaRepository.findById(id)
+       var pizza = pizzaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pizza not found"));
-        maptoPizza(updatePizzaDTO);
-        return mapToPizzaDto(pizza);
+        var updated = pizzaRepository.save(mapDtotoPizza(updatePizzaDTO));
+        return mapToPizzaDto(updated);
     }
 
     @Override
@@ -72,3 +76,4 @@ public class PizzaServiceImpl implements PizzaService {
                 .collect(Collectors.toList());
     }
 }
+

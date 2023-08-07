@@ -10,7 +10,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class ClientInfoDto {
+public class CreateClientDto extends ClientInfoDto {
     @Max(value = 20)
     private String firstName;
     @Max(value = 20)
@@ -20,4 +20,9 @@ public class ClientInfoDto {
     private int age;
     @Min(value = 10, message = "No less then 10 symbols")
     private String login;
+    @Min(value = 10, message = "No less then 10 symbols")
+    private String password;
+    @NotNull
+    private double creditBalance;
 }
+

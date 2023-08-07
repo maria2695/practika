@@ -2,6 +2,7 @@ package com.example.demo.services.impl;
 
 import com.example.demo.dto.ingredient.IngredientInfoDto;
 import com.example.demo.entities.Ingredient;
+import com.example.demo.exception.NullEntityReferenceException;
 import com.example.demo.repository.IngredientRepository;
 import com.example.demo.services.IngredientService;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +18,14 @@ public class IngredientServiceImpl implements IngredientService {
 
     private final IngredientRepository ingredientRepository;
 
-    private Ingredient mapToIngredient(IngredientInfoDto ingredientInfoDto){
-        Ingredient ingredient = new Ingredient();
+    private Ingredient mapDtoToIngredient(IngredientInfoDto ingredientInfoDto){
+        var ingredient = new Ingredient();
         ingredient.setName(ingredientInfoDto.getName());
         ingredient.setCount(ingredientInfoDto.getCount());
         ingredient.setBuyCost(ingredientInfoDto.getBuyCost());
         ingredient.setSaleCost(ingredientInfoDto.getSaleCost());
         ingredient.setNumberOfSales(ingredientInfoDto.getNumberOfSales());
-        return ingredientRepository.save(ingredient);
+        return ingredient;
     }
 
     private IngredientInfoDto mapToIngredientDto(Ingredient ingredient){
@@ -39,12 +40,12 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public IngredientInfoDto create(IngredientInfoDto createIngredientDTO) {
-        if(createIngredientDTO != null){
-            Ingredient savedIngredient = mapToIngredient(createIngredientDTO);
+    public IngredientInfoDto create(IngredientInfoDto ingredientInfoDto) {
+        if(ingredientInfoDto != null){
+            var savedIngredient = ingredientRepository.save(mapDtoToIngredient(ingredientInfoDto));
             return mapToIngredientDto(savedIngredient);
         }
-        return null;
+        throw new NullEntityReferenceException("Cannot be null");
     }
 
 
@@ -61,8 +62,8 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientInfoDto update(IngredientInfoDto updateIngredientDTO, Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-        mapToIngredient(updateIngredientDTO);
-        return mapToIngredientDto(ingredient);
+        var updated = ingredientRepository.save(mapDtoToIngredient(updateIngredientDTO));
+        return mapToIngredientDto(updated);
     }
 
     @Override
@@ -80,3 +81,4 @@ public class IngredientServiceImpl implements IngredientService {
                 .collect(Collectors.toList());
     }
 }
+
